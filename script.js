@@ -4,7 +4,6 @@ const noBtn = document.getElementById("btn2");
 let yesX = 0, yesY = 0;
 let noX = 0, noY = 0;
 
-// ボタンの初期位置を中央に固定（CSSの中央配置を基準にする）
 yesBtn.style.position = "relative";
 noBtn.style.position = "relative";
 
@@ -12,28 +11,21 @@ document.addEventListener("mousemove", (e) => {
   const mouseX = e.clientX;
   const mouseY = e.clientY;
 
-  // YESボタンの中心へ向かう
-  moveYesButton(mouseX, mouseY);
-
-  // NOボタンは逃げる
-  moveNoButton(mouseX, mouseY);
+  moveYes(mouseX, mouseY);
+  moveNo(mouseX, mouseY);
 });
 
-function moveYesButton(mouseX, mouseY) {
+function moveYes(mouseX, mouseY) {
   const rect = yesBtn.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
 
-  // カーソルへのベクトル
-  const dx = mouseX - centerX;
-  const dy = mouseY - centerY;
+  const dx = mouseX - cx;
+  const dy = mouseY - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
 
-  const distance = Math.sqrt(dx * dx + dy * dy);
+  if (dist < 5) return;
 
-  // 距離が小さくなったら止める
-  if (distance < 5) return;
-
-  // 速度調整（近づく）
   const speed = 0.08;
   yesX += dx * speed;
   yesY += dy * speed;
@@ -41,22 +33,35 @@ function moveYesButton(mouseX, mouseY) {
   yesBtn.style.transform = `translate(${yesX}px, ${yesY}px)`;
 }
 
-function moveNoButton(mouseX, mouseY) {
+function moveNo(mouseX, mouseY) {
   const rect = noBtn.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
 
-  // カーソルから逃げるベクトル
-  const dx = centerX - mouseX;
-  const dy = centerY - mouseY;
+  const dx = cx - mouseX;
+  const dy = cy - mouseY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
 
-  const distance = Math.sqrt(dx * dx + dy * dy);
+  // 一定距離を保つ（距離が近いほど強く逃げる）
+  const minDist = 150;
+  if (dist < minDist) {
+    const speed = Math.min(200 / dist, 5);
+    noX += dx * speed;
+    noY += dy * speed;
+  }
 
-  // カーソルが近いほど強く逃げる
-  const speed = Math.min(150 / distance, 4);
+  // 画面端に追い込まれたらワープ
+  const margin = 20;
+  const screenW = window.innerWidth;
+  const screenH = window.innerHeight;
 
-  noX += dx * speed;
-  noY += dy * speed;
+  const btnLeft = rect.left + noX;
+  const btnTop = rect.top + noY;
 
-  noBtn.style.transform = `translate(${noX}px, ${noY}px)`;
-}
+  const nearLeft = btnLeft < margin;
+  const nearRight = btnLeft + rect.width > screenW - margin;
+  const nearTop = btnTop < margin;
+  const nearBottom = btnTop + rect.height > screenH - margin;
+
+  if (nearLeft || nearRight || nearTop || nearBottom) {
+    //
