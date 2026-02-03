@@ -1,28 +1,38 @@
-/* 画面全体の基本設定 */
+/* 画面全体を上下に2分割する */
 body {
   margin: 0;
   padding: 0;
   height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
+  flex-direction: column; /* 上下に並べる */
   background: #f5f5f5;
   font-family: sans-serif;
 }
 
-/*メッセージの基本デザイン*/
+/* 上半分：メッセージ領域 */
 #message {
+  flex: 1; /* 上半分を占める */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 32px;
   font-weight: bold;
-  margin-bottom: 40px;
   text-align: center;
+}
+
+/* 下半分：ボタン領域 */
+.buttons {
+  flex: 1; /* 下半分を占める */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px; /* ボタンの間隔 */
 }
 
 /* ボタンの基本デザイン */
 button {
   padding: 12px 24px;
-  font-size: 16px;
+  font-size: 20px;
   border: none;
   border-radius: 8px;
   background: #4a90e2;
@@ -31,13 +41,11 @@ button {
   transition: transform 0.15s ease, background 0.2s ease;
 }
 
-/* ホバー時の軽いアニメーション */
 button:hover {
   background: #357ab8;
   transform: scale(1.05);
 }
 
-/* クリック時の押し込み感 */
 button:active {
   transform: scale(0.95);
 }
