@@ -1,26 +1,27 @@
 const yesBtn = document.getElementById("btn1");
 const noBtn = document.getElementById("btn2");
 
+// 最初から absolute にしておく（CSS側でも relative を消す）
 yesBtn.style.position = "absolute";
 noBtn.style.position = "absolute";
 
-// 初期位置
-let yesX = window.innerWidth / 2;
-let yesY = window.innerHeight * 0.6;
+// 初期位置（画面中央付近に安定配置）
+let yesX = window.innerWidth / 2 - yesBtn.offsetWidth / 2;
+let yesY = window.innerHeight * 0.55;
 
 let noX = window.innerWidth / 2 + 150;
-let noY = window.innerHeight * 0.6;
+let noY = window.innerHeight * 0.55;
 
 yesBtn.style.left = yesX + "px";
 yesBtn.style.top = yesY + "px";
 noBtn.style.left = noX + "px";
 noBtn.style.top = noY + "px";
 
-// 2cm ≒ 80px
-const triggerDist = 80;
+// 2.5cm ≒ 100px
+const triggerDist = 100;
 
 // YES の中心補正（1cm右へ）
-const yesCenterOffsetX = 40; // ← ここがズレ修正の本体
+const yesCenterOffsetX = 40;
 const yesCenterOffsetY = 0;
 
 document.addEventListener("mousemove", (e) => {
@@ -42,7 +43,7 @@ function moveYes(mouseX, mouseY) {
   const dy = mouseY - (yesY + centerY);
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // 2cm以内で吸引開始
+  // 2.5cm以内で吸引開始
   if (dist < triggerDist) {
     const speed = 0.15;
     yesX += dx * speed;
@@ -62,7 +63,7 @@ function moveNo(mouseX, mouseY) {
   const dy = (noY + centerY) - mouseY;
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // 2cm以内で逃げる
+  // 2.5cm以内で逃げる
   if (dist < triggerDist) {
     const speed = Math.min(200 / dist, 6);
     noX += dx * speed;
