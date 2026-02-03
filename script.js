@@ -124,8 +124,19 @@ function moveNo() {
   // カーソルから3cmの位置に移動するだけ（穏やか）
   const ratio = noKeepDist / dist;
 
-  const newCenterX = mouseX + dx * ratio;
-  const newCenterY = mouseY + dy * ratio;
+  let newCenterX = mouseX + dx * ratio;
+  let newCenterY = mouseY + dy * ratio;
+
+  // 画面端に追いやられたらカーソルの反対側3cmにワープ
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  if (newCenterX < 0 || newCenterX > w || newCenterY < 0 || newCenterY > h) {
+    // カーソルの反対側3cm
+    const oppositeRatio = -noKeepDist / dist;
+    newCenterX = mouseX + dx * oppositeRatio;
+    newCenterY = mouseY + dy * oppositeRatio;
+  }
 
   noX = newCenterX - rect.width / 2;
   noY = newCenterY - rect.height / 2;
@@ -137,7 +148,7 @@ function moveNo() {
 }
 
 // --------------------------------------
-// 画面外に出ないように調整（跳ね返りなし）
+// 画面外に出ないように調整
 // --------------------------------------
 function keepInside(type) {
   const w = window.innerWidth;
