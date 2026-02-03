@@ -13,7 +13,7 @@ function setInitialPositions() {
   const w = window.innerWidth;
   const h = window.innerHeight;
 
-  const y = h * 0.55; // 下半分
+  const y = h * 0.6; // 下半分
 
   const yesPosX = w * (1 / 3);
   const noPosX = w * (2 / 3);
