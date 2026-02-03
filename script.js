@@ -37,7 +37,7 @@ setInitialPositions();
 // 設定
 // --------------------------------------
 const triggerDist = 100; // 2.5cm
-const noEscapeDist = 150; // 4cm
+const noEscapeDist = 170; // 4.5cm
 
 let yesActive = false;
 let noActive = false;
@@ -109,7 +109,7 @@ function moveYes() {
 }
 
 // --------------------------------------
-// NO ボタン：起動後は4cm逃げる（なめらかでなくてOK）
+// NO ボタン：起動後は4.5cm逃げる（瞬間移動でOK）
 // --------------------------------------
 function moveNo() {
   const rect = noBtn.getBoundingClientRect();
@@ -120,7 +120,7 @@ function moveNo() {
   const dy = centerY - mouseY;
   const dist = Math.hypot(dx, dy);
 
-  // カーソルから4cmの位置に移動（大きすぎる動きにならないように）
+  // カーソルから4.5cmの位置に移動
   if (dist < triggerDist) {
     const ratio = noEscapeDist / dist;
 
@@ -130,7 +130,7 @@ function moveNo() {
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    // 端に追いやられたらカーソルの反対側4cmにワープ
+    // 端に追いやられたらカーソルの反対側4.5cmにワープ
     if (
       newCenterX < 0 ||
       newCenterX > w ||
