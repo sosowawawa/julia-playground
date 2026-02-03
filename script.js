@@ -1,11 +1,21 @@
 const yesBtn = document.getElementById("btn1");
 const noBtn = document.getElementById("btn2");
 
-let yesX = 0, yesY = 0;
-let noX = 0, noY = 0;
+// ボタンを絶対配置に変更
+yesBtn.style.position = "absolute";
+noBtn.style.position = "absolute";
 
-yesBtn.style.position = "relative";
-noBtn.style.position = "relative";
+// 初期位置を中央付近に
+yesBtn.style.left = "50%";
+yesBtn.style.top = "60%";
+noBtn.style.left = "50%";
+noBtn.style.top = "60%";
+
+let yesX = window.innerWidth / 2;
+let yesY = window.innerHeight * 0.6;
+
+let noX = window.innerWidth / 2 + 150;
+let noY = window.innerHeight * 0.6;
 
 document.addEventListener("mousemove", (e) => {
   const mouseX = e.clientX;
@@ -16,52 +26,48 @@ document.addEventListener("mousemove", (e) => {
 });
 
 function moveYes(mouseX, mouseY) {
-  const rect = yesBtn.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-
-  const dx = mouseX - cx;
-  const dy = mouseY - cy;
+  const dx = mouseX - yesX;
+  const dy = mouseY - yesY;
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  if (dist < 5) return;
+  if (dist > 5) {
+    const speed = 0.08;
+    yesX += dx * speed;
+    yesY += dy * speed;
+  }
 
-  const speed = 0.08;
-  yesX += dx * speed;
-  yesY += dy * speed;
-
-  yesBtn.style.transform = `translate(${yesX}px, ${yesY}px)`;
+  yesBtn.style.left = `${yesX}px`;
+  yesBtn.style.top = `${yesY}px`;
 }
 
 function moveNo(mouseX, mouseY) {
-  const rect = noBtn.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-
-  const dx = cx - mouseX;
-  const dy = cy - mouseY;
+  const dx = noX - mouseX;
+  const dy = noY - mouseY;
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // 一定距離を保つ（距離が近いほど強く逃げる）
   const minDist = 150;
+
   if (dist < minDist) {
     const speed = Math.min(200 / dist, 5);
     noX += dx * speed;
     noY += dy * speed;
   }
 
-  // 画面端に追い込まれたらワープ
+  const w = window.innerWidth;
+  const h = window.innerHeight;
   const margin = 20;
-  const screenW = window.innerWidth;
-  const screenH = window.innerHeight;
 
-  const btnLeft = rect.left + noX;
-  const btnTop = rect.top + noY;
+  if (
+    noX < margin ||
+    noX > w - margin ||
+    noY < margin ||
+    noY > h - margin
+  ) {
+    const offset = 200;
+    noX = mouseX < w / 2 ? mouseX + offset : mouseX - offset;
+    noY = mouseY < h / 2 ? mouseY + offset : mouseY - offset;
+  }
 
-  const nearLeft = btnLeft < margin;
-  const nearRight = btnLeft + rect.width > screenW - margin;
-  const nearTop = btnTop < margin;
-  const nearBottom = btnTop + rect.height > screenH - margin;
-
-  if (nearLeft || nearRight || nearTop || nearBottom) {
-    //
+  noBtn.style.left = `${noX}px`;
+  noBtn.style.top = `${noY}px`;
+}
