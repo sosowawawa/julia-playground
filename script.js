@@ -4,12 +4,15 @@ const noBtn = document.getElementById("btn2");
 yesBtn.style.position = "absolute";
 noBtn.style.position = "absolute";
 
-// --- 初期位置（左寄せ & 間隔広め） ---
-let yesX = window.innerWidth * 0.35 - yesBtn.offsetWidth / 2;
-let yesY = window.innerHeight * 0.55;
+// --- 初期配置（左右バランスを完全に揃える） ---
+const baseX = window.innerWidth * 0.30; // ← 全体を左寄せに
+const baseY = window.innerHeight * 0.55;
 
-let noX = window.innerWidth * 0.35 - noBtn.offsetWidth / 2 + 250; // ← 間隔を広げた
-let noY = window.innerHeight * 0.55;
+let yesX = baseX - yesBtn.offsetWidth / 2;
+let yesY = baseY;
+
+let noX = baseX + 250 - noBtn.offsetWidth / 2; // ← YES から 250px 右へ
+let noY = baseY;
 
 yesBtn.style.left = yesX + "px";
 yesBtn.style.top = yesY + "px";
@@ -17,7 +20,7 @@ noBtn.style.left = noX + "px";
 noBtn.style.top = noY + "px";
 
 // --- 設定 ---
-const triggerDist = 100; // 2.5cm ≒ 100px
+const triggerDist = 100; // 2.5cm
 let yesActivated = false;
 
 let mouseX = window.innerWidth / 2;
@@ -52,10 +55,8 @@ function moveYes() {
   const dy = mouseY - (yesY + centerY);
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // 2.5cm以内で起動
   if (dist < triggerDist) yesActivated = true;
 
-  // 起動後はずっと追跡
   if (yesActivated) {
     const speed = 0.15;
     yesX += dx * speed;
@@ -76,7 +77,6 @@ function moveNo() {
   const dy = (noY + centerY) - mouseY;
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // 2.5cm以内で逃げる
   if (dist < triggerDist) {
     const speed = Math.min(200 / dist, 6);
     noX += dx * speed;
@@ -87,7 +87,6 @@ function moveNo() {
   const h = window.innerHeight;
   const margin = 20;
 
-  // 端に追い込まれたらワープ
   if (
     noX < margin ||
     noX > w - margin ||
