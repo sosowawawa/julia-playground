@@ -120,34 +120,36 @@ function moveNo() {
   const dy = centerY - mouseY;
   const dist = Math.hypot(dx, dy);
 
-  // カーソルから4cmの位置に瞬間移動（大きすぎる動きにならないように）
-  const ratio = noEscapeDist / dist;
+  // カーソルから4cmの位置に移動（大きすぎる動きにならないように）
+  if (dist < triggerDist) {
+    const ratio = noEscapeDist / dist;
 
-  let newCenterX = mouseX + dx * ratio;
-  let newCenterY = mouseY + dy * ratio;
+    let newCenterX = mouseX + dx * ratio;
+    let newCenterY = mouseY + dy * ratio;
 
-  // 画面端に追いやられたらカーソルの反対側4cmにワープ
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-  if (
-    newCenterX < 0 ||
-    newCenterX > w ||
-    newCenterY < 0 ||
-    newCenterY > h
-  ) {
-    const oppositeRatio = -noEscapeDist / dist;
-    newCenterX = mouseX + dx * oppositeRatio;
-    newCenterY = mouseY + dy * oppositeRatio;
+    // 端に追いやられたらカーソルの反対側4cmにワープ
+    if (
+      newCenterX < 0 ||
+      newCenterX > w ||
+      newCenterY < 0 ||
+      newCenterY > h
+    ) {
+      const oppositeRatio = -noEscapeDist / dist;
+      newCenterX = mouseX + dx * oppositeRatio;
+      newCenterY = mouseY + dy * oppositeRatio;
+    }
+
+    noX = newCenterX - rect.width / 2;
+    noY = newCenterY - rect.height / 2;
+
+    keepInside("no");
+
+    noBtn.style.left = noX + "px";
+    noBtn.style.top = noY + "px";
   }
-
-  noX = newCenterX - rect.width / 2;
-  noY = newCenterY - rect.height / 2;
-
-  keepInside("no");
-
-  noBtn.style.left = noX + "px";
-  noBtn.style.top = noY + "px";
 }
 
 // --------------------------------------
