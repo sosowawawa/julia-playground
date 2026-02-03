@@ -1,15 +1,14 @@
 const yesBtn = document.getElementById("btn1");
 const noBtn = document.getElementById("btn2");
 
-// 最初から absolute にしておく（CSS側でも relative を消す）
 yesBtn.style.position = "absolute";
 noBtn.style.position = "absolute";
 
-// 初期位置（画面中央付近に安定配置）
+// 初期位置（中央に正しく配置）
 let yesX = window.innerWidth / 2 - yesBtn.offsetWidth / 2;
 let yesY = window.innerHeight * 0.55;
 
-let noX = window.innerWidth / 2 + 150;
+let noX = window.innerWidth / 2 - noBtn.offsetWidth / 2 + 150;
 let noY = window.innerHeight * 0.55;
 
 yesBtn.style.left = yesX + "px";
@@ -19,6 +18,9 @@ noBtn.style.top = noY + "px";
 
 // 2.5cm ≒ 100px
 const triggerDist = 100;
+
+// YES ボタンは一度起動したら追跡し続ける
+let yesActivated = false;
 
 // YES の中心補正（1cm右へ）
 const yesCenterOffsetX = 40;
@@ -35,7 +37,6 @@ document.addEventListener("mousemove", (e) => {
 function moveYes(mouseX, mouseY) {
   const rect = yesBtn.getBoundingClientRect();
 
-  // ボタン中心 + 補正
   const centerX = rect.width / 2 + yesCenterOffsetX;
   const centerY = rect.height / 2 + yesCenterOffsetY;
 
@@ -43,8 +44,11 @@ function moveYes(mouseX, mouseY) {
   const dy = mouseY - (yesY + centerY);
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // 2.5cm以内で吸引開始
-  if (dist < triggerDist) {
+  // 2.5cm以内に入ったら起動
+  if (dist < triggerDist) yesActivated = true;
+
+  // 起動後は距離に関係なく追跡
+  if (yesActivated) {
     const speed = 0.15;
     yesX += dx * speed;
     yesY += dy * speed;
