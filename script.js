@@ -4,43 +4,49 @@ const noBtn = document.getElementById("btn2");
 yesBtn.style.position = "absolute";
 noBtn.style.position = "absolute";
 
-// --- 初期配置（左右バランスを完全に揃える & 左寄せ） ---
-// 基準点（ここを動かせば全体が左右に動く）
-const baseX = window.innerWidth * 0.22; // ← 左寄せの強さ
-const baseY = window.innerHeight * 0.55;
-
-// YES の初期位置（基準点）
-let yesX = baseX - yesBtn.offsetWidth / 2;
-let yesY = baseY;
-
-// NO の初期位置（YES から 300px 右へ）
-let noX = baseX + 300 - noBtn.offsetWidth / 2;
-let noY = baseY;
-
-// 初期配置を反映
-yesBtn.style.left = yesX + "px";
-yesBtn.style.top = yesY + "px";
-noBtn.style.left = noX + "px";
-noBtn.style.top = noY + "px";
-
-// --- 設定 ---
-const triggerDist = 100; // 2.5cm
-let yesActivated = false;
+let yesX, yesY, noX, noY;
 
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 
-// YES の中心補正（1cm右へ）
+const triggerDist = 100; // 2.5cm
+let yesActivated = false;
+
 const yesCenterOffsetX = 40;
 const yesCenterOffsetY = 0;
 
-// --- マウス位置だけ更新 ---
+// ----------------------
+// 初期配置（読み込み後に実行）
+// ----------------------
+window.onload = () => {
+  const baseX = window.innerWidth * 0.25; // 左寄せ
+  const baseY = window.innerHeight * 0.55;
+
+  // YES
+  yesX = baseX - yesBtn.offsetWidth / 2;
+  yesY = baseY;
+
+  // NO（YES から 300px 右）
+  noX = baseX + 300 - noBtn.offsetWidth / 2;
+  noY = baseY;
+
+  yesBtn.style.left = yesX + "px";
+  yesBtn.style.top = yesY + "px";
+  noBtn.style.left = noX + "px";
+  noBtn.style.top = noY + "px";
+};
+
+// ----------------------
+// マウス位置更新
+// ----------------------
 document.addEventListener("mousemove", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 });
 
-// --- 毎フレーム動かす ---
+// ----------------------
+// 毎フレーム更新
+// ----------------------
 function animate() {
   moveYes();
   moveNo();
@@ -48,7 +54,9 @@ function animate() {
 }
 animate();
 
-// --- YES ボタン ---
+// ----------------------
+// YES ボタン
+// ----------------------
 function moveYes() {
   const rect = yesBtn.getBoundingClientRect();
 
@@ -67,15 +75,17 @@ function moveYes() {
     yesY += dy * speed;
   }
 
-  yesBtn.style.left = `${yesX}px`;
-  yesBtn.style.top = `${yesY}px`;
+  yesBtn.style.left = yesX + "px";
+  yesBtn.style.top = yesY + "px";
 }
 
-// --- NO ボタン ---
+// ----------------------
+// NO ボタン
+// ----------------------
 function moveNo() {
   const rect = noBtn.getBoundingClientRect();
 
-  // rect.left/top を基準に中心を計算（ズレ防止）
+  // rect 基準で中心を計算（誤判定ゼロ）
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
 
@@ -83,7 +93,7 @@ function moveNo() {
   const dy = centerY - mouseY;
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // 2.5cm以内で逃げる（逃げ距離は短め）
+  // 2.5cm以内で逃げる（逃げ距離短め）
   if (dist < triggerDist) {
     const speed = Math.min(120 / dist, 3);
     noX += dx * speed;
@@ -94,7 +104,6 @@ function moveNo() {
   const h = window.innerHeight;
   const margin = 20;
 
-  // 端に追い込まれたらワープ
   if (
     noX < margin ||
     noX > w - margin ||
@@ -106,6 +115,6 @@ function moveNo() {
     noY = mouseY < h / 2 ? mouseY + offset : mouseY - offset;
   }
 
-  noBtn.style.left = `${noX}px`;
-  noBtn.style.top = `${noY}px`;
+  noBtn.style.left = noX + "px";
+  noBtn.style.top = noY + "px";
 }
