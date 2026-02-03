@@ -15,7 +15,6 @@ function setInitialPositions() {
 
   const y = h * 0.55; // 下半分
 
-  // 横三等分
   const yesPosX = w * (1 / 3);
   const noPosX = w * (2 / 3);
 
@@ -38,7 +37,7 @@ setInitialPositions();
 // 設定
 // --------------------------------------
 const triggerDist = 100; // 2.5cm
-const noKeepDist = 120;  // 3cm
+const noEscapeDist = 150; // 4cm
 
 let yesActive = false;
 let noActive = false;
@@ -110,7 +109,7 @@ function moveYes() {
 }
 
 // --------------------------------------
-// NO ボタン：起動後はカーソルから3cmだけ離れる
+// NO ボタン：起動後は4cm逃げる（なめらかでなくてOK）
 // --------------------------------------
 function moveNo() {
   const rect = noBtn.getBoundingClientRect();
@@ -121,19 +120,23 @@ function moveNo() {
   const dy = centerY - mouseY;
   const dist = Math.hypot(dx, dy);
 
-  // カーソルから3cmの位置に移動するだけ（穏やか）
-  const ratio = noKeepDist / dist;
+  // カーソルから4cmの位置に瞬間移動（大きすぎる動きにならないように）
+  const ratio = noEscapeDist / dist;
 
   let newCenterX = mouseX + dx * ratio;
   let newCenterY = mouseY + dy * ratio;
 
-  // 画面端に追いやられたらカーソルの反対側3cmにワープ
+  // 画面端に追いやられたらカーソルの反対側4cmにワープ
   const w = window.innerWidth;
   const h = window.innerHeight;
 
-  if (newCenterX < 0 || newCenterX > w || newCenterY < 0 || newCenterY > h) {
-    // カーソルの反対側3cm
-    const oppositeRatio = -noKeepDist / dist;
+  if (
+    newCenterX < 0 ||
+    newCenterX > w ||
+    newCenterY < 0 ||
+    newCenterY > h
+  ) {
+    const oppositeRatio = -noEscapeDist / dist;
     newCenterX = mouseX + dx * oppositeRatio;
     newCenterY = mouseY + dy * oppositeRatio;
   }
