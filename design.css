@@ -1,32 +1,36 @@
-/* 画面全体を上下に2分割する */
+/* 画面全体を上下に分割 */
 body {
   margin: 0;
   padding: 0;
   height: 100vh;
   display: flex;
-  flex-direction: column; /* 上下に並べる */
+  flex-direction: column;
   background: #f5f5f5;
   font-family: sans-serif;
 }
 
-/* 上半分：メッセージ領域 */
-#message {
-  flex: 1; /* 上半分を占める */
+/* 上半分（メッセージ領域） */
+.top {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* メッセージ */
+#message {
   font-size: 32px;
   font-weight: bold;
   text-align: center;
 }
 
-/* 下半分：ボタン領域 */
-.buttons {
-  flex: 1; /* 下半分を占める */
+/* 下半分（ボタン領域） */
+.bottom {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 40px; /* ボタンの間隔 */
+  gap: 40px;
 }
 
 /* ボタンの基本デザイン */
