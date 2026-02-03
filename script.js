@@ -4,9 +4,11 @@ const noBtn = document.getElementById("btn2");
 yesBtn.style.position = "absolute";
 noBtn.style.position = "absolute";
 
-// -----------------------------
+// --------------------------------------
 // 初期配置（画面下半分・横三等分）
-// -----------------------------
+// --------------------------------------
+let yesX, yesY, noX, noY;
+
 function setInitialPositions() {
   const w = window.innerWidth;
   const h = window.innerHeight;
@@ -30,14 +32,13 @@ function setInitialPositions() {
   noBtn.style.top = noY + "px";
 }
 
-let yesX, yesY, noX, noY;
 setInitialPositions();
 
-// -----------------------------
+// --------------------------------------
 // 設定
-// -----------------------------
+// --------------------------------------
 const triggerDist = 100; // 2.5cm
-const noEscapeDist = 120; // 3cm逃げる
+const noKeepDist = 120;  // 3cm
 
 let yesActive = false;
 let noActive = false;
@@ -49,9 +50,9 @@ let mouseY = 0;
 const yesOffsetX = 40;
 const yesOffsetY = 0;
 
-// -----------------------------
+// --------------------------------------
 // マウス位置更新
-// -----------------------------
+// --------------------------------------
 document.addEventListener("mousemove", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
@@ -59,9 +60,9 @@ document.addEventListener("mousemove", (e) => {
   checkActivation();
 });
 
-// -----------------------------
+// --------------------------------------
 // 2.5cm以内に入ったら初めて機能付与
-// -----------------------------
+// --------------------------------------
 function checkActivation() {
   const yesRect = yesBtn.getBoundingClientRect();
   const yesCenterX = yesRect.left + yesRect.width / 2;
@@ -78,9 +79,9 @@ function checkActivation() {
   if (distNo < triggerDist) noActive = true;
 }
 
-// -----------------------------
+// --------------------------------------
 // 毎フレーム更新
-// -----------------------------
+// --------------------------------------
 function animate() {
   if (yesActive) moveYes();
   if (noActive) moveNo();
@@ -88,9 +89,9 @@ function animate() {
 }
 animate();
 
-// -----------------------------
+// --------------------------------------
 // YES ボタン：起動後は永続追跡
-// -----------------------------
+// --------------------------------------
 function moveYes() {
   const rect = yesBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2 + yesOffsetX;
@@ -102,15 +103,15 @@ function moveYes() {
   yesX += dx * 0.15;
   yesY += dy * 0.15;
 
-  keepInsideScreen("yes");
+  keepInside("yes");
 
   yesBtn.style.left = yesX + "px";
   yesBtn.style.top = yesY + "px";
 }
 
-// -----------------------------
-// NO ボタン：起動後は3cm逃げる
-// -----------------------------
+// --------------------------------------
+// NO ボタン：起動後はカーソルから3cmだけ離れる
+// --------------------------------------
 function moveNo() {
   const rect = noBtn.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
@@ -120,48 +121,38 @@ function moveNo() {
   const dy = centerY - mouseY;
   const dist = Math.hypot(dx, dy);
 
-  if (dist < triggerDist) {
-    const ratio = noEscapeDist / dist;
-    noX += dx * ratio;
-    noY += dy * ratio;
-  }
+  // カーソルから3cmの位置に移動するだけ（穏やか）
+  const ratio = noKeepDist / dist;
 
-  keepInsideScreen("no");
+  const newCenterX = mouseX + dx * ratio;
+  const newCenterY = mouseY + dy * ratio;
+
+  noX = newCenterX - rect.width / 2;
+  noY = newCenterY - rect.height / 2;
+
+  keepInside("no");
 
   noBtn.style.left = noX + "px";
   noBtn.style.top = noY + "px";
 }
 
-// -----------------------------
-// 画面外に出ないようにする & 端ならワープ
-// -----------------------------
-function keepInsideScreen(type) {
+// --------------------------------------
+// 画面外に出ないように調整（跳ね返りなし）
+// --------------------------------------
+function keepInside(type) {
   const w = window.innerWidth;
   const h = window.innerHeight;
-
-  let x = type === "yes" ? yesX : noX;
-  let y = type === "yes" ? yesY : noY;
 
   const btn = type === "yes" ? yesBtn : noBtn;
   const rect = btn.getBoundingClientRect();
 
-  const margin = 10;
+  let x = type === "yes" ? yesX : noX;
+  let y = type === "yes" ? yesY : noY;
 
-  // 画面外に出そうならワープ（NOのみ）
-  if (type === "no") {
-    if (rect.left < margin) x = w - rect.width - 50;
-    if (rect.right > w - margin) x = 50;
-    if (rect.top < margin) y = h - rect.height - 50;
-    if (rect.bottom > h - margin) y = 50;
-  }
-
-  // YES は画面内に押し戻すだけ
-  if (type === "yes") {
-    if (rect.left < margin) x = margin;
-    if (rect.right > w - margin) x = w - rect.width - margin;
-    if (rect.top < margin) y = margin;
-    if (rect.bottom > h - margin) y = h - rect.height - margin;
-  }
+  if (x < 0) x = 0;
+  if (x + rect.width > w) x = w - rect.width;
+  if (y < 0) y = 0;
+  if (y + rect.height > h) y = h - rect.height;
 
   if (type === "yes") {
     yesX = x;
