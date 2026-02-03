@@ -26,12 +26,18 @@ document.addEventListener("mousemove", (e) => {
 });
 
 function moveYes(mouseX, mouseY) {
-  const dx = mouseX - yesX;
-  const dy = mouseY - yesY;
+  const rect = yesBtn.getBoundingClientRect();
+
+  // ボタン中心 + 1cm（約40px）右へ補正
+  const centerX = rect.width / 2 + 40;
+  const centerY = rect.height / 2;
+
+  const dx = mouseX - (yesX + centerX);
+  const dy = mouseY - (yesY + centerY);
   const dist = Math.sqrt(dx * dx + dy * dy);
 
-  if (dist > 5) {
-    const speed = 0.08;
+  if (dist < triggerDist) {
+    const speed = 0.15;
     yesX += dx * speed;
     yesY += dy * speed;
   }
