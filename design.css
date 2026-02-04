@@ -33,6 +33,17 @@ body {
   word-break: break-word;
 }
 
+#topGif {
+  display: block;
+  margin: 32px auto 0 auto; /* 上部余白追加 */
+  width: min(40vh, 45vh, 90vw, 320px);
+  height: min(40vh, 45vh, 90vw, 320px);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
 /* 下半分（ボタン） */
 .bottom {
   flex: 1;
