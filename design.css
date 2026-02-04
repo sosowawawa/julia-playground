@@ -6,16 +6,31 @@ body {
   display: flex;
   flex-direction: column;
   font-family: sans-serif;
+  background: linear-gradient(90deg, #ffe0e6 0%, #f8c6d8 100%);
+  background-image:url('background.png');
+  background-repeat:no-repeat;
+  background-position: left top, right bottom;
+  background-side: cover
 }
 
 /* 上半分（メッセージ） */
 .top {
   flex: 1;
   display: flex;
-  justify-content: center;   /* 横中央 */
+  flex-direction:column;
+  justify-content: flex-start;   /* 横中央 */
   align-items: center;       /* 縦中央 */
-  background-color: #f5f5f5;
-  font-size: 8rem;
+  font-size: 5rem;
+  position:relative;
+}
+
+#message{
+  margin-top: 2vh;
+  margin-bottom: 4vh;
+  font-size: min(6vw, 5vh, 3rem);
+  max-width: 90vw;
+  text-align: center;
+  word-break: break-word;
 }
 
 /* 下半分（ボタン） */
