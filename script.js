@@ -91,6 +91,22 @@ function checkActivation() {
 function animate() {
   if (yesActive) moveYes();
   if (noActive) moveNo();
+  // NOボタンが動かないまま動いていなければ元の位置にゆっくり戻す
+if (Date.now() - lastMoveTime > 5000) {
+  // ゆっくり戻す (0.1倍ずつ戻る)
+  noX += (noInitialX - noX) * 0.1;
+  noY += (noInitialY - noY) * 0.1;
+  noBtn.style.left = noX + "px";
+  noBtn.style.top = noY + "px";
+  
+  // (ほぼ初期位置に戻ったら時刻リセット)
+  if (Math.abs(noX - noInitialX) < 1 && Math.abs(noY - noInitialY) < 1) {
+    noX = noInitialX;
+    noY = noInitialY;
+    lastMoveTime = Date.now();
+  }
+}
+
   requestAnimationFrame(animate);
 }
 animate();
@@ -156,6 +172,8 @@ function moveNo() {
 
     noBtn.style.left = noX + "px";
     noBtn.style.top = noY + "px";
+
+    lastNoMoveTime = Date.now();
   }
 }
 
