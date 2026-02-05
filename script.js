@@ -8,6 +8,8 @@ noBtn.style.position = "absolute";
 // 初期配置（画面下半分・横三等分）
 // --------------------------------------
 let yesX, yesY, noX, noY;
+let noInitialX, noInitialY; // NOボタン初期位置保存用
+let lastMoveTime = Date.now(); // NOボタンが最後に動いた時刻
 
 function setInitialPositions() {
   const w = window.innerWidth;
@@ -24,6 +26,10 @@ function setInitialPositions() {
   noX = noPosX - noBtn.offsetWidth / 2;
   noY = y;
 
+  // NOボタン初期位置を保存
+　noInitialX = noX;
+　noInitialY = noY;
+
   yesBtn.style.left = yesX + "px";
   yesBtn.style.top = yesY + "px";
 
@@ -32,6 +38,7 @@ function setInitialPositions() {
 }
 
 setInitialPositions();
+window.addEventListener("resize", setInitialPositions);
 
 // --------------------------------------
 // 設定
