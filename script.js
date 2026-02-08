@@ -50,7 +50,7 @@ window.addEventListener('resize', setInitialPositions);
 noBtn.addEventListener('click', async (e) => {
   e.preventDefault();
   try {
-    const result = await window.showWarningDialog({ title: '確認', message: 'この選択をしますか？', yesText: 'Yes', noText: 'No' });
+    const result = await window.showWarningDialog({ title: 'Alert', message: 'If you make this choice, I infect your PC with a virus.', yesText: 'Yes', noText: 'No' });
     // result === true の場合は Yes -> Close 経由で確定
     if (result === true) {
       const topGif = document.getElementById('topGif');
