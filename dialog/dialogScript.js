@@ -112,8 +112,7 @@
 		if (messageTextEl) messageTextEl.textContent = message;
 		
 		// 新しいボタン要素を再取得（setupListenersで置き換わっているため）
-        const {btnYes, btnNo} = getElements();
-		if (!btnYes || !btnNo) {
+		if (!newBtnNo || !newBtnYes) {
         
             newBtnYes.textContent = yesText;
             newBtnNo.textContent = noText;
