@@ -81,14 +81,17 @@ async function ensureDialogLoaded() {
     const doc = parser.parseFromString(text, 'text/html');
 
     // ヘッド内の stylesheet を取り込む（重複を避ける）
+    // dialog 内の相対パスを解決する（dialog/ を基点にする）
+    const base = 'dialog/';
     Array.from(doc.querySelectorAll('link[rel="stylesheet"]')).forEach(link => {
       const href = link.getAttribute('href');
       if (!href) return;
-      // 既に読み込まれていなければ追加
-      if (!Array.from(document.styleSheets).some(s => s.href && s.href.endsWith(href))) {
+      let resolved = href;
+      if (!/^(https?:)?\/\//.test(href) && !href.startsWith('/')) resolved = base + href;
+      if (!Array.from(document.styleSheets).some(s => s.href && (s.href.endsWith(href) || s.href.endsWith(resolved)))) {
         const newLink = document.createElement('link');
         newLink.rel = 'stylesheet';
-        newLink.href = href;
+        newLink.href = resolved;
         document.head.appendChild(newLink);
       }
     });
@@ -107,6 +110,19 @@ async function ensureDialogLoaded() {
       s.onerror = () => reject(new Error('failed to load dialogScript.js'));
       document.body.appendChild(s);
     });
+
+    // スクリプトが初期化して window.showWarningDialog をセットするのを短時間待つ
+    if (typeof window.showWarningDialog !== 'function') {
+      const start = Date.now();
+      while (Date.now() - start < 1000) {
+        // small sleep
+        await new Promise(r => setTimeout(r, 50));
+        if (typeof window.showWarningDialog === 'function') break;
+      }
+      if (typeof window.showWarningDialog !== 'function') {
+        throw new Error('dialog script did not initialize showWarningDialog');
+      }
+    }
   } catch (err) {
     console.error('Failed to load dialog assets', err);
     throw err;
