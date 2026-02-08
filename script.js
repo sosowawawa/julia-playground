@@ -82,7 +82,7 @@ window.addEventListener('mouseout', (e) => {
   }
 });
 window.addEventListener('mousemove', (e) => {
-  if (!e.relatedTarget && !e.toElement)
+  if (!e.relatedTarget && !e.fromElement)
   {
     isMouseOut = false;
     lastMouseOutTime = null;
@@ -115,32 +115,32 @@ function animate() {
   if (yesActive) moveYes();
   if (noActive) moveNo();
   // NOボタンが5秒以上動いていなければ元の位置にゆっくり戻す
-if (Date.now() - lastNoMoveTime > 5000) {
-  // ゆっくり戻す (0.1倍ずつ戻る)
-  noX += (noInitialX - noX) * 0.1;
-  noY += (noInitialY - noY) * 0.1;
-  noBtn.style.left = noX + "px";
-  noBtn.style.top = noY + "px";
+  if (Date.now() - lastNoMoveTime > 5000) {
+    // ゆっくり戻す (0.1倍ずつ戻る)
+    noX += (noInitialX - noX) * 0.1;
+    noY += (noInitialY - noY) * 0.1;
+    noBtn.style.left = noX + "px";
+    noBtn.style.top = noY + "px";
   
-  if (Math.abs(noX - noInitialX) < 1 && Math.abs(noY - noInitialY) < 1) {
-    noX = noInitialX;
-    noY = noInitialY;
-    lastNoMoveTime = Date.now();
+    if (Math.abs(noX - noInitialX) < 1 && Math.abs(noY - noInitialY) < 1) {
+      noX = noInitialX;
+      noY = noInitialY;
+      lastNoMoveTime = Date.now();
+    }
   }
-}
 
-if (isMouseOut && lastMouseOutTime && Date.now() - lastMouseOutTime > 5000){
-  yesActive = false;
-  yesX += (yesInitialX - yesX) * 0.1;
-  yesY += (yesInitialY - yesY) * 0.1;
-  yesBtn.style.left = yesX + "px";
-  yesBtn.style.top = yesY + "px";
-  if (Math.abs(yesX - yesInitialX) < 1 && Math.abs(yesY - yesInitialY) < 1){
-    yesX = yesInitialX;
-    yesY = yesInitialY;
-    lastMouseOutTime = Date.now();
+  if (isMouseOut && lastMouseOutTime && Date.now() - lastMouseOutTime > 5000){
+    yesActive = false;
+    yesX += (yesInitialX - yesX) * 0.1;
+    yesY += (yesInitialY - yesY) * 0.1;
+    yesBtn.style.left = yesX + "px";
+    yesBtn.style.top = yesY + "px";
+    if (Math.abs(yesX - yesInitialX) < 1 && Math.abs(yesY - yesInitialY) < 1){
+      yesX = yesInitialX;
+      yesY = yesInitialY;
+      lastMouseOutTime = Date.now();
+    }
   }
-}
 
   requestAnimationFrame(animate);
 }
