@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=playfair+Displayl:wght@500;700&family=Roboto:wght@400;500&display=swap');
+
 /* 全体を上下2分割するための設定 */
 body {
   margin: 0;
@@ -5,12 +7,12 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: sans-serif;
+  font-family: 'Playfair Display', 'Roboto', serif;
   background: linear-gradient(90deg, #ffe0e6 0%, #f8c6d8 100%);
   background-image:url('background.png');
   background-repeat:no-repeat;
   background-position: left top, right bottom;
-  background-side: cover
+  background-size: cover;
 }
 
 /* 上半分（メッセージ） */
@@ -58,17 +60,26 @@ button {
   padding: 15px 40px;
   font-size: 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 28px;
   cursor: pointer;
-  background-color: #4caf50;
-  color: white;
-  transition: 0.2s;
+  font-family: 'Roboto', 'Playfair Display', serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: 0.4px 16px rgba(80, 80, 80, 0.10);
 }
 
-button:hover {
-  opacity: 0.8;
+button:not(#btn2) {
+  background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
+  color: #fff;
 }
 
 #btn2 {
-  background-color: #f44336;
+  background: linear-gradient(90deg, #232526 0%, #ff512f 100%);
+  color: #fff;
+}
+
+button:hover, #btn2:hover {
+  opacity: 0.92;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(80, 80, 80, 0.18);
 }
