@@ -21,14 +21,21 @@
 			return;
 		}
 
-		// 既存のリスナーをクリア（cloneNodeで新しい要素を作成）
-		const newBtnNo = btnNo.cloneNode(true);
-		const newBtnYes = btnYes.cloneNode(true);
-		btnNo.parentNode.replaceChild(newBtnNo, btnNo);
-		btnYes.parentNode.replaceChild(newBtnYes, btnYes);
-
-		// 新しい要素に対してリスナーを追加
-		const {btnYes: updatedBtnYes, btnNo: updatedBtnNo} = getElements();
+		// 既存のリスナーをクリア（初回のみcloneNodeで新しい要素を作成）
+		let updatedBtnYes = btnYes;
+		let updatedBtnNo = btnNo;
+		
+		if (!listenersSetup) {
+			const newBtnNo = btnNo.cloneNode(true);
+			const newBtnYes = btnYes.cloneNode(true);
+			btnNo.parentNode.replaceChild(newBtnNo, btnNo);
+			btnYes.parentNode.replaceChild(newBtnYes, btnYes);
+			
+			const elements = getElements();
+			updatedBtnYes = elements.btnYes;
+			updatedBtnNo = elements.btnNo;
+			listenersSetup = true;
+		}
 
 		// No: 単純にダイアログを閉じ、イベントを発火
 		updatedBtnNo.addEventListener('click', (e) => {
@@ -93,13 +100,13 @@
 
 	function openDialog({title = 'Alert', message = 'If you make this choice, I infect your PC with a virus.', yesText = 'Yes', noText = 'No'}){
 		// ダイアログを表示（hidden属性を削除）
-		const {overlay, titleEl, messageTextEl, btnYes, btnNo} = getElements();
+		const {overlay, titleEl, messageTextEl} = getElements();
 		
 		if (overlay) {
 			overlay.removeAttribute('hidden');
 		}
 
-		// リスナーをセットアップ（毎回新しく登録）
+		// リスナーをセットアップ（初回のみボタン置き換え）
 		setupListeners();
 		
 		titleEl.textContent = title;
@@ -124,6 +131,7 @@
 		if (overlay) {
 			overlay.setAttribute('hidden', '');
 		}
+		listenersSetup = false;
 		resolvePromise && resolvePromise(result);
 		resolvePromise = null;
 	}
