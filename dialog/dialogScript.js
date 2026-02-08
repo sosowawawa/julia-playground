@@ -21,7 +21,8 @@
 			return;
 		}
 
-        messageTextEl.textContent = 'If you make this choice, I infect your PC with a virus.'
+        const {messageTextEl} = getElements();
+        if (messageTextEl) messageTextEl.textContent = 'If you make this choice, I infect your PC with a virus.'
 
 		// 既存のリスナーをクリア（初回のみcloneNodeで新しい要素を作成）
 		let updatedBtnYes = btnYes;
@@ -50,7 +51,7 @@
 		// Yes: メッセージを差し替え、footer を close ボタンのみへ差し替える
 		updatedBtnYes.addEventListener('click', (e) => {
 			e.stopPropagation();
-			const {messageTextEl, overlay} = getElements();
+			const {overlay} = getElements();
 			if (messageTextEl) messageTextEl.textContent = 'Pleeease…';
 
 			const footer = overlay.querySelector('.dialog-footer');
