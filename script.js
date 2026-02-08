@@ -101,11 +101,6 @@ noBtn.addEventListener('click', async (e) => {
       yesText: 'Yes', 
       noText: 'No' 
     });
-    // result === true の場合は Yes -> Close 経由で確定
-    if (result === true) {
-      const topGif = document.getElementById('topGif');
-      if (topGif) topGif.src = 'https://media.tenor.com/2p6a3Z4wT6UAAAAd/thank-you.gif';
-    }
   } catch (err) {
     console.error('dialog error', err);
   }
