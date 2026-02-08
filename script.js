@@ -69,6 +69,74 @@ window.addEventListener('warning-dialog-close', (ev) => {
     if (topGif) topGif.src = newGif;
   }
 });
+// ダイアログ HTML/CSS/JS を動的に読み込み、`showWarningDialog` を準備する
+async function ensureDialogLoaded() {
+  if (typeof window.showWarningDialog === 'function') return;
+
+  try {
+    const resp = await fetch('dialog/dialog.html');
+    if (!resp.ok) throw new Error('failed to fetch dialog html');
+    const text = await resp.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+
+    // ヘッド内の stylesheet を取り込む（重複を避ける）
+    Array.from(doc.querySelectorAll('link[rel="stylesheet"]')).forEach(link => {
+      const href = link.getAttribute('href');
+      if (!href) return;
+      // 既に読み込まれていなければ追加
+      if (!Array.from(document.styleSheets).some(s => s.href && s.href.endsWith(href))) {
+        const newLink = document.createElement('link');
+        newLink.rel = 'stylesheet';
+        newLink.href = href;
+        document.head.appendChild(newLink);
+      }
+    });
+
+    // body の内容を挿入
+    const dialogBody = doc.body;
+    while (dialogBody.firstChild) {
+      document.body.appendChild(dialogBody.firstChild);
+    }
+
+    // dialogScript.js を動的に追加して読み込む
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'dialog/dialogScript.js';
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('failed to load dialogScript.js'));
+      document.body.appendChild(s);
+    });
+  } catch (err) {
+    console.error('Failed to load dialog assets', err);
+    throw err;
+  }
+}
+
+// No ボタンをクリックしたときにダイアログを開く処理を追加
+noBtn.addEventListener('click', async (e) => {
+  e.preventDefault();
+  try {
+    await ensureDialogLoaded();
+    const result = await window.showWarningDialog({ title: 'Alert', message: 'If you make this choice, I infect your PC with a virus.', yesText: 'Yes', noText: 'No' });
+    // result === true の場合は Yes -> Close 経由で確定
+    if (result === true) {
+      const topGif = document.getElementById('topGif');
+      if (topGif) topGif.src = 'https://media.tenor.com/2p6a3Z4wT6UAAAAd/thank-you.gif';
+    }
+  } catch (err) {
+    console.error('dialog error', err);
+  }
+});
+
+// イベントで GIF 差し替えを受け取る（ダイアログ側からの通知をハンドル）
+window.addEventListener('warning-dialog-close', (ev) => {
+  const newGif = ev?.detail?.newGifUrl;
+  if (newGif) {
+    const topGif = document.getElementById('topGif');
+    if (topGif) topGif.src = newGif;
+  }
+});
 
 // --------------------------------------
 // 設定
