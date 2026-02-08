@@ -21,6 +21,8 @@
 			return;
 		}
 
+        messageTextEl.textContent = 'If you make this choice, I infect your PC with a virus.'
+
 		// 既存のリスナーをクリア（初回のみcloneNodeで新しい要素を作成）
 		let updatedBtnYes = btnYes;
 		let updatedBtnNo = btnNo;
@@ -99,7 +101,7 @@
 		}
 	}
 
-	function openDialog({title = 'Alert', message = 'If you make this choice, I infect your PC with a virus.', yesText = 'Yes', noText = 'No'}){
+	function openDialog({title = 'Alert', yesText = 'Yes', noText = 'No'}){
 		// ダイアログを表示（hidden属性を削除）
 		const {overlay, titleEl, messageTextEl} = getElements();
 		
@@ -111,7 +113,6 @@
 		setupListeners();
 		
 		titleEl.textContent = title;
-		if (messageTextEl) messageTextEl.textContent = message;
 		
 		// 新しいボタン要素を再取得（setupListenersで置き換わっているため）
 		if (!isSecondOpen) {
