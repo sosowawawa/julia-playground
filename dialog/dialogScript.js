@@ -52,11 +52,11 @@
 			closeBtn.addEventListener('click', (e) => {
 				e.stopPropagation();
 				const newGifUrl = 'https://media.tenor.com/awlXAXpEWHgAAAAi/ebichu-hamster.gif';
-				closeDialog(true);
-
 				// index ページにある GIF を差し替え（存在する場合）
 				const topGif = document.getElementById('topGif');
 				if (topGif) topGif.src = newGifUrl;
+
+				closeDialog(true);
 
 				window.dispatchEvent(new CustomEvent('warning-dialog-close', {detail: {newGifUrl}}));
 			});
