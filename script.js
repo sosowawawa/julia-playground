@@ -245,7 +245,7 @@ function moveYes() {
 }
 
 // --------------------------------------
-// NO ボタン：起動後は4.5cm逃げる（瞬間移動でOK）
+// NO ボタン：起動後は4.5cm逃げる（段階的に移動）
 // --------------------------------------
 function moveNo() {
   const rect = noBtn.getBoundingClientRect();
@@ -260,26 +260,31 @@ function moveNo() {
   if (dist < triggerDist) {
     const ratio = noEscapeDist / dist;
 
-    let newCenterX = mouseX + dx * ratio;
-    let newCenterY = mouseY + dy * ratio;
+    let targetCenterX = mouseX + dx * ratio;
+    let targetCenterY = mouseY + dy * ratio;
 
     const w = window.innerWidth;
     const h = window.innerHeight;
 
     // 端に追いやられたらカーソルの反対側4.5cmにワープ
     if (
-      newCenterX < 0 ||
-      newCenterX > w ||
-      newCenterY < 0 ||
-      newCenterY > h
+      targetCenterX < 0 ||
+      targetCenterX > w ||
+      targetCenterY < 0 ||
+      targetCenterY > h
     ) {
       const oppositeRatio = -noEscapeDist / dist;
-      newCenterX = mouseX + dx * oppositeRatio;
-      newCenterY = mouseY + dy * oppositeRatio;
+      targetCenterX = mouseX + dx * oppositeRatio;
+      targetCenterY = mouseY + dy * oppositeRatio;
     }
 
-    noX = newCenterX - rect.width / 2;
-    noY = newCenterY - rect.height / 2;
+    // ターゲット位置を計算
+    let targetX = targetCenterX - rect.width / 2;
+    let targetY = targetCenterY - rect.height / 2;
+
+    // 段階的に移動（0.1の係数で段階的な移動）
+    noX += (targetX - noX) * 0.1;
+    noY += (targetY - noY) * 0.1;
 
     keepInside("no");
 

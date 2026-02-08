@@ -15,9 +15,6 @@
 	}
 
 	function setupListeners() {
-		if (listenersSetup) return;
-		listenersSetup = true;
-
 		const {overlay, btnYes, btnNo} = getElements();
 		if (!btnYes || !btnNo) {
 			console.error('Dialog buttons not found. btnYes:', btnYes, 'btnNo:', btnNo);
