@@ -80,6 +80,7 @@
 				if (e.target === overlayRef) closeDialog(false);
 			});
 		}
+	}
 
 	function openDialog({title = 'Alert', message = 'If you make this choice, I infect your PC with a virus.', yesText = 'Yes', noText = 'No'}){
 		setupListeners(); // リスナー設定を初回呼び出しで実行
