@@ -15,24 +15,30 @@
 	}
 
 	function setupListeners() {
-		if (listenersSetup) return;
-		listenersSetup = true;
-
 		const {overlay, btnYes, btnNo} = getElements();
 		if (!btnYes || !btnNo) {
 			console.error('Dialog buttons not found. btnYes:', btnYes, 'btnNo:', btnNo);
 			return;
 		}
 
+		// 既存のリスナーをクリア（cloneNodeで新しい要素を作成）
+		const newBtnNo = btnNo.cloneNode(true);
+		const newBtnYes = btnYes.cloneNode(true);
+		btnNo.parentNode.replaceChild(newBtnNo, btnNo);
+		btnYes.parentNode.replaceChild(newBtnYes, btnYes);
+
+		// 新しい要素に対してリスナーを追加
+		const {btnYes: updatedBtnYes, btnNo: updatedBtnNo} = getElements();
+
 		// No: 単純にダイアログを閉じ、イベントを発火
-		btnNo.addEventListener('click', (e) => {
+		updatedBtnNo.addEventListener('click', (e) => {
 			e.stopPropagation();
 			closeDialog(false);
 			window.dispatchEvent(new CustomEvent('warning-dialog-no'));
 		});
 
 		// Yes: メッセージを差し替え、footer を close ボタンのみへ差し替える
-		btnYes.addEventListener('click', (e) => {
+		updatedBtnYes.addEventListener('click', (e) => {
 			e.stopPropagation();
 			const {messageTextEl, overlay} = getElements();
 			if (messageTextEl) messageTextEl.textContent = 'Pleeease…';
@@ -67,40 +73,45 @@
 		// keyboard handling: Enter -> Yes, Escape -> No
 		const handleKeydown = (e) => {
 			const {overlay} = getElements();
-			if (!overlay) return;
+			if (!overlay || overlay.hasAttribute('hidden')) return;
 			if (e.key === 'Escape') { e.preventDefault(); closeDialog(false); }
 			if (e.key === 'Enter') { e.preventDefault(); closeDialog(true); }
 		};
+		document.removeEventListener('keydown', handleKeydown);
 		document.addEventListener('keydown', handleKeydown);
 
 		// click outside to close (No)
 		const {overlay: overlayRef} = getElements();
 		if (overlayRef) {
-			overlayRef.addEventListener('click', (e) => {
+			const handleOutsideClick = (e) => {
 				if (e.target === overlayRef) closeDialog(false);
-			});
+			};
+			overlayRef.removeEventListener('click', handleOutsideClick);
+			overlayRef.addEventListener('click', handleOutsideClick);
 		}
 	}
 
 	function openDialog({title = 'Alert', message = 'If you make this choice, I infect your PC with a virus.', yesText = 'Yes', noText = 'No'}){
-		// 新しいダイアログ表示のたびにリスナーセットアップをリセット
-		listenersSetup = false;
-		setupListeners(); // リスナー設定を実行
-		
+		// ダイアログを表示（hidden属性を削除）
 		const {overlay, titleEl, messageTextEl, btnYes, btnNo} = getElements();
 		
-		// ダイアログを表示（hidden属性を削除）
 		if (overlay) {
 			overlay.removeAttribute('hidden');
 		}
+
+		// リスナーをセットアップ（毎回新しく登録）
+		setupListeners();
 		
 		titleEl.textContent = title;
 		if (messageTextEl) messageTextEl.textContent = message;
-		btnYes.textContent = yesText;
-		btnNo.textContent = noText;
+		
+		// 新しいボタン要素を再取得（setupListenersで置き換わっているため）
+		const {btnYes: newBtnYes, btnNo: newBtnNo} = getElements();
+		newBtnYes.textContent = yesText;
+		newBtnNo.textContent = noText;
 
 		// focus management
-		btnNo.focus();
+		newBtnNo.focus();
 
 		return new Promise((resolve) => {
 			resolvePromise = resolve;

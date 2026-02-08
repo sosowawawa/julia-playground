@@ -10,6 +10,16 @@
 	--max-width: 420px;
 }
 
+/* hidden属性を非表示にする */
+[hidden] {
+	display: none !important;
+}
+
+/* hidden属性を非表示にする */
+[hidden] {
+	display: none !important;
+}
+
 .overlay{
 	position: fixed;
 	inset: 0;
