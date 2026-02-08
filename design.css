@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=playfair+Displayl:wght@500;700&family=Roboto:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:wght@500;700&display=swap');
 
 /* 全体を上下2分割するための設定 */
 body {
@@ -7,7 +7,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Playfair Display', 'Roboto', serif;
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
   background: linear-gradient(90deg, #ffe0e6 0%, #f8c6d8 100%);
   background-image:url('background.png');
   background-repeat:no-repeat;
@@ -62,8 +62,8 @@ button {
   border: none;
   border-radius: 28px;
   cursor: pointer;
-  font-family: 'Roboto', 'Playfair Display', serif;
-  font-weight: 500;
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+  font-weight: 600;
   letter-spacing: 0.5px;
   box-shadow: 0.4px 16px rgba(80, 80, 80, 0.10);
 }
