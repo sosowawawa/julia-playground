@@ -46,112 +46,16 @@ function setInitialPositions() {
 setInitialPositions();
 window.addEventListener('resize', setInitialPositions);
 
-// No ボタンをクリックしたときにダイアログを開く処理を追加
+// No ボタンをクリックしたときにダイアログを開く処理
 noBtn.addEventListener('click', async (e) => {
   e.preventDefault();
   try {
-    await ensureDialogLoaded();
-    const result = await window.showWarningDialog({ title: 'Alert', message: 'If you make this choice, I infect your PC with a virus.', yesText: 'Yes', noText: 'No' });
-    // result === true の場合は Yes -> Close 経由で確定
-    if (result === true) {
-      const topGif = document.getElementById('topGif');
-      if (topGif) topGif.src = 'https://media.tenor.com/2p6a3Z4wT6UAAAAd/thank-you.gif';
-    }
-  } catch (err) {
-    console.error('dialog error', err);
-  }
-});
-
-// イベントで GIF 差し替えを受け取る（ダイアログ側からの通知をハンドル）
-window.addEventListener('warning-dialog-close', (ev) => {
-  const newGif = ev?.detail?.newGifUrl;
-  if (newGif) {
-    const topGif = document.getElementById('topGif');
-    if (topGif) topGif.src = newGif;
-  }
-});
-// ダイアログ HTML/CSS/JS を動的に読み込み、`showWarningDialog` を準備する
-async function ensureDialogLoaded() {
-  if (typeof window.showWarningDialog === 'function') return;
-
-  try {
-    const resp = await fetch('dialog/dialog.html');
-    if (!resp.ok) throw new Error('failed to fetch dialog html');
-    const text = await resp.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, 'text/html');
-
-    // ヘッド内の stylesheet を取り込む（重複を避ける）
-    // dialog 内の相対パスを解決する（dialog/ を基点にする）。
-    const base = 'dialog/';
-    Array.from(doc.querySelectorAll('link[rel="stylesheet"]')).forEach(link => {
-      const href = link.getAttribute('href');
-      if (!href) return;
-      let resolved;
-      if (/^(https?:)?\/\//.test(href) || href.startsWith('/')) resolved = href;
-      else if (href.startsWith(base)) resolved = href;
-      else resolved = base + href;
-      if (!Array.from(document.styleSheets).some(s => s.href && (s.href.endsWith(href) || s.href.endsWith(resolved)))) {
-        const newLink = document.createElement('link');
-        newLink.rel = 'stylesheet';
-        newLink.href = resolved;
-        document.head.appendChild(newLink);
-      }
+    const result = await window.showWarningDialog({ 
+      title: 'Alert', 
+      message: 'If you make this choice, I infect your PC with a virus.', 
+      yesText: 'Yes', 
+      noText: 'No' 
     });
-
-    // body の内容を挿入（script タグは除去して後で一度だけ読み込む）
-    const dialogBody = doc.body.cloneNode(true);
-    // collect and remove scripts
-    const scripts = Array.from(dialogBody.querySelectorAll('script'));
-    scripts.forEach(s => s.parentNode && s.parentNode.removeChild(s));
-    // append remaining nodes
-    while (dialogBody.firstChild) {
-      document.body.appendChild(dialogBody.firstChild);
-    }
-
-    // dialogScript.js の src を元の dialog 内スクリプトから解決する（存在すれば）、なければ既知のパスを使う
-    let dialogScriptSrc = 'dialog/dialogScript.js';
-    const originalScript = doc.querySelector('script[src]');
-    if (originalScript) {
-      const src = originalScript.getAttribute('src');
-      if (src) {
-        if (/^(https?:)?\/\//.test(src) || src.startsWith('/')) dialogScriptSrc = src;
-        else if (src.startsWith(base)) dialogScriptSrc = src;
-        else dialogScriptSrc = base + src;
-      }
-    }
-
-    await new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = dialogScriptSrc;
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error('failed to load dialog script: ' + dialogScriptSrc));
-      document.body.appendChild(s);
-    });
-
-    // スクリプトが初期化して window.showWarningDialog をセットするのを短時間待つ
-    if (typeof window.showWarningDialog !== 'function') {
-      const start = Date.now();
-      while (Date.now() - start < 1000) {
-        await new Promise(r => setTimeout(r, 50));
-        if (typeof window.showWarningDialog === 'function') break;
-      }
-      if (typeof window.showWarningDialog !== 'function') {
-        throw new Error('dialog script did not initialize showWarningDialog');
-      }
-    }
-  } catch (err) {
-    console.error('Failed to load dialog assets', err);
-    throw err;
-  }
-}
-
-// No ボタンをクリックしたときにダイアログを開く処理を追加
-noBtn.addEventListener('click', async (e) => {
-  e.preventDefault();
-  try {
-    await ensureDialogLoaded();
-    const result = await window.showWarningDialog({ title: 'Alert', message: 'If you make this choice, I infect your PC with a virus.', yesText: 'Yes', noText: 'No' });
     // result === true の場合は Yes -> Close 経由で確定
     if (result === true) {
       const topGif = document.getElementById('topGif');
