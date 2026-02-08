@@ -112,8 +112,8 @@
 		if (messageTextEl) messageTextEl.textContent = message;
 		
 		// 新しいボタン要素を再取得（setupListenersで置き換わっているため）
-		const {btnYes: newBtnYes, btnNo: newBtnNo} = getElements();
-        if (!newBtnYes || !newBtnNo) {
+        const {overlay, btnYes, btnNo} = getElements();
+		if (!btnYes || !btnNo) {
         
             newBtnYes.textContent = yesText;
             newBtnNo.textContent = noText;
