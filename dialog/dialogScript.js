@@ -109,16 +109,18 @@
 		// リスナーをセットアップ（初回のみボタン置き換え）
 		setupListeners();
 		
-		titleEl.textContent = title;
-		if (messageTextEl) messageTextEl.textContent = message;
-		
-		// 新しいボタン要素を再取得（setupListenersで置き換わっているため）
-		const {btnYes: newBtnYes, btnNo: newBtnNo} = getElements();
-		newBtnYes.textContent = yesText;
-		newBtnNo.textContent = noText;
+        if (!listenersSetup){
+            titleEl.textContent = title;
+            if (messageTextEl) messageTextEl.textContent = message;
+            
+            // 新しいボタン要素を再取得（setupListenersで置き換わっているため）
+            const {btnYes: newBtnYes, btnNo: newBtnNo} = getElements();
+            newBtnYes.textContent = yesText;
+            newBtnNo.textContent = noText;
 
-		// focus management
-		newBtnNo.focus();
+            // focus management
+            newBtnNo.focus();
+        }
 
 		return new Promise((resolve) => {
 			resolvePromise = resolve;
