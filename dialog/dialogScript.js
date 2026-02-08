@@ -1,6 +1,7 @@
 (() => {
 	let resolvePromise = null;
 	let listenersSetup = false;
+    let isSecondOpen = false;
 
 	// 要素取得を遅延させる
 	function getElements() {
@@ -34,6 +35,7 @@
 			updatedBtnYes = elements.btnYes;
 			updatedBtnNo = elements.btnNo;
 			listenersSetup = true;
+            isSecondOpen = true;
 		}
 
 		// No: 単純にダイアログを閉じ、イベントを発火
@@ -112,7 +114,7 @@
 		if (messageTextEl) messageTextEl.textContent = message;
 		
 		// 新しいボタン要素を再取得（setupListenersで置き換わっているため）
-		if (!newBtnNo || !newBtnYes) {
+		if (!isSecondOpen) {
         
             newBtnYes.textContent = yesText;
             newBtnNo.textContent = noText;
