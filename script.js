@@ -8,8 +8,12 @@ noBtn.style.position = "absolute";
 // 初期配置（画面下半分・横三等分）
 // --------------------------------------
 let yesX, yesY, noX, noY;
+let yesInitialX, yesInitialY;
 let noInitialX, noInitialY; // NOボタン初期位置保存用
-let lastMoveTime = Date.now(); // NOボタンが最後に動いた時刻
+let lastYesMoveTime = Date.now();
+let lastNoMoveTime = Date.now(); // NOボタンが最後に動いた時刻
+let isMouseOut = false;
+let lastMouseOutTime = null;
 
 function setInitialPositions() {
   const w = window.innerWidth;
@@ -27,6 +31,8 @@ function setInitialPositions() {
   noY = y;
 
   // NOボタン初期位置を保存
+  yesInitialX = yesX;
+  yesInitialY = yesY;
 　noInitialX = noX;
 　noInitialY = noY;
 
@@ -38,7 +44,7 @@ function setInitialPositions() {
 }
 
 setInitialPositions();
-window.addEventListener("resize", setInitialPositions);
+window.addEventListener('resize', setInitialPositions);
 
 // --------------------------------------
 // 設定
@@ -66,6 +72,23 @@ document.addEventListener("mousemove", (e) => {
   checkActivation();
 });
 
+// マウスがウィンドウ外に出た/戻った時間を管理
+window.addEventListener('mouseout', (e) => {
+  // 関連ターゲットがnullならウィンドウ外
+  if (!e.relatedTarget && !e.toElement)
+  {
+    isMouseOut = true;
+    lastMouseOutTime = Date.now();
+  }
+});
+window.addEventListener('mousemove', (e) => {
+  if (!e.relatedTarget && !e.toElement)
+  {
+    isMouseOut = false;
+    lastMouseOutTime = null;
+  }
+});
+
 // --------------------------------------
 // 2.5cm以内に入ったら初めて機能付与
 // --------------------------------------
@@ -91,19 +114,31 @@ function checkActivation() {
 function animate() {
   if (yesActive) moveYes();
   if (noActive) moveNo();
-  // NOボタンが動かないまま動いていなければ元の位置にゆっくり戻す
-if (Date.now() - lastMoveTime > 5000) {
+  // NOボタンが5秒以上動いていなければ元の位置にゆっくり戻す
+if (Date.now() - lastNoMoveTime > 5000) {
   // ゆっくり戻す (0.1倍ずつ戻る)
   noX += (noInitialX - noX) * 0.1;
   noY += (noInitialY - noY) * 0.1;
   noBtn.style.left = noX + "px";
   noBtn.style.top = noY + "px";
   
-  // (ほぼ初期位置に戻ったら時刻リセット)
   if (Math.abs(noX - noInitialX) < 1 && Math.abs(noY - noInitialY) < 1) {
     noX = noInitialX;
     noY = noInitialY;
-    lastMoveTime = Date.now();
+    lastNoMoveTime = Date.now();
+  }
+}
+
+if (isMouseOut && lastMouseOutTime && Date.now() - lastMouseOutTime > 5000){
+  yesActive = false;
+  yesX += (yesInitialX - yesX) * 0.1;
+  yesY += (yesInitialY - yesY) * 0.1;
+  yesBtn.style.left = yesX + "px";
+  yesBtn.style.top = yesY + "px";
+  if (Math.abs(yesX - yesInitialX) < 1 && Math.abs(yesY - yesInitialY) < 1){
+    yesX = yesInitialX;
+    yesY = yesInitialY;
+    lastMouseOutTime = Date.now();
   }
 }
 
@@ -129,6 +164,8 @@ function moveYes() {
 
   yesBtn.style.left = yesX + "px";
   yesBtn.style.top = yesY + "px";
+
+  lastYesMoveTime = Date.now();
 }
 
 // --------------------------------------
