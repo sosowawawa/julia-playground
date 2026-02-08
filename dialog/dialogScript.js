@@ -113,11 +113,14 @@
 		
 		// 新しいボタン要素を再取得（setupListenersで置き換わっているため）
 		const {btnYes: newBtnYes, btnNo: newBtnNo} = getElements();
-		newBtnYes.textContent = yesText;
-		newBtnNo.textContent = noText;
-
-		// focus management
-		newBtnNo.focus();
+        if (!newBtnYes || !newBtnNo) {
+        
+            newBtnYes.textContent = yesText;
+            newBtnNo.textContent = noText;
+    
+            // focus management
+            newBtnNo.focus();
+        }
 
 		return new Promise((resolve) => {
 			resolvePromise = resolve;
