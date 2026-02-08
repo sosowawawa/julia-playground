@@ -46,6 +46,30 @@ function setInitialPositions() {
 setInitialPositions();
 window.addEventListener('resize', setInitialPositions);
 
+// No ボタンをクリックしたときにダイアログを開く処理を追加
+noBtn.addEventListener('click', async (e) => {
+  e.preventDefault();
+  try {
+    const result = await window.showWarningDialog({ title: '確認', message: 'この選択をしますか？', yesText: 'Yes', noText: 'No' });
+    // result === true の場合は Yes -> Close 経由で確定
+    if (result === true) {
+      const topGif = document.getElementById('topGif');
+      if (topGif) topGif.src = 'https://media.tenor.com/2p6a3Z4wT6UAAAAd/thank-you.gif';
+    }
+  } catch (err) {
+    console.error('dialog error', err);
+  }
+});
+
+// イベントで GIF 差し替えを受け取る（ダイアログ側からの通知をハンドル）
+window.addEventListener('warning-dialog-close', (ev) => {
+  const newGif = ev?.detail?.newGifUrl;
+  if (newGif) {
+    const topGif = document.getElementById('topGif');
+    if (topGif) topGif.src = newGif;
+  }
+});
+
 // --------------------------------------
 // 設定
 // --------------------------------------
