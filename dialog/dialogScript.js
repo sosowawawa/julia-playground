@@ -42,7 +42,7 @@
 			e.stopPropagation();
 			closeDialog(false);
 			window.dispatchEvent(new CustomEvent('warning-dialog-no'));
-		});
+		}, {once: true});
 
 		// Yes: メッセージを差し替え、footer を close ボタンのみへ差し替える
 		updatedBtnYes.addEventListener('click', (e) => {
@@ -75,7 +75,7 @@
 			});
 
 			window.dispatchEvent(new CustomEvent('warning-dialog-yes'));
-		});
+		}, {once: true});
 
 		// keyboard handling: Enter -> Yes, Escape -> No
 		const handleKeydown = (e) => {
@@ -109,18 +109,16 @@
 		// リスナーをセットアップ（初回のみボタン置き換え）
 		setupListeners();
 		
-        if (!listenersSetup){
-            titleEl.textContent = title;
-            if (messageTextEl) messageTextEl.textContent = message;
-            
-            // 新しいボタン要素を再取得（setupListenersで置き換わっているため）
-            const {btnYes: newBtnYes, btnNo: newBtnNo} = getElements();
-            newBtnYes.textContent = yesText;
-            newBtnNo.textContent = noText;
+		titleEl.textContent = title;
+		if (messageTextEl) messageTextEl.textContent = message;
+		
+		// 新しいボタン要素を再取得（setupListenersで置き換わっているため）
+		const {btnYes: newBtnYes, btnNo: newBtnNo} = getElements();
+		newBtnYes.textContent = yesText;
+		newBtnNo.textContent = noText;
 
-            // focus management
-            newBtnNo.focus();
-        }
+		// focus management
+		newBtnNo.focus();
 
 		return new Promise((resolve) => {
 			resolvePromise = resolve;
