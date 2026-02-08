@@ -282,9 +282,9 @@ function moveNo() {
     let targetX = targetCenterX - rect.width / 2;
     let targetY = targetCenterY - rect.height / 2;
 
-    // 段階的に移動（0.1の係数で段階的な移動）
-    noX += (targetX - noX) * 0.1;
-    noY += (targetY - noY) * 0.1;
+    // 段階的に移動（0.05の係数でより遅く移動）
+    noX += (targetX - noX) * 0.05;
+    noY += (targetY - noY) * 0.05;
 
     keepInside("no");
 
