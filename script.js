@@ -81,13 +81,15 @@ async function ensureDialogLoaded() {
     const doc = parser.parseFromString(text, 'text/html');
 
     // ヘッド内の stylesheet を取り込む（重複を避ける）
-    // dialog 内の相対パスを解決する（dialog/ を基点にする）
+    // dialog 内の相対パスを解決する（dialog/ を基点にする）。
     const base = 'dialog/';
     Array.from(doc.querySelectorAll('link[rel="stylesheet"]')).forEach(link => {
       const href = link.getAttribute('href');
       if (!href) return;
-      let resolved = href;
-      if (!/^(https?:)?\/\//.test(href) && !href.startsWith('/')) resolved = base + href;
+      let resolved;
+      if (/^(https?:)?\/\//.test(href) || href.startsWith('/')) resolved = href;
+      else if (href.startsWith(base)) resolved = href;
+      else resolved = base + href;
       if (!Array.from(document.styleSheets).some(s => s.href && (s.href.endsWith(href) || s.href.endsWith(resolved)))) {
         const newLink = document.createElement('link');
         newLink.rel = 'stylesheet';
@@ -96,18 +98,33 @@ async function ensureDialogLoaded() {
       }
     });
 
-    // body の内容を挿入
-    const dialogBody = doc.body;
+    // body の内容を挿入（script タグは除去して後で一度だけ読み込む）
+    const dialogBody = doc.body.cloneNode(true);
+    // collect and remove scripts
+    const scripts = Array.from(dialogBody.querySelectorAll('script'));
+    scripts.forEach(s => s.parentNode && s.parentNode.removeChild(s));
+    // append remaining nodes
     while (dialogBody.firstChild) {
       document.body.appendChild(dialogBody.firstChild);
     }
 
-    // dialogScript.js を動的に追加して読み込む
+    // dialogScript.js の src を元の dialog 内スクリプトから解決する（存在すれば）、なければ既知のパスを使う
+    let dialogScriptSrc = 'dialog/dialogScript.js';
+    const originalScript = doc.querySelector('script[src]');
+    if (originalScript) {
+      const src = originalScript.getAttribute('src');
+      if (src) {
+        if (/^(https?:)?\/\//.test(src) || src.startsWith('/')) dialogScriptSrc = src;
+        else if (src.startsWith(base)) dialogScriptSrc = src;
+        else dialogScriptSrc = base + src;
+      }
+    }
+
     await new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'dialog/dialogScript.js';
+      s.src = dialogScriptSrc;
       s.onload = () => resolve();
-      s.onerror = () => reject(new Error('failed to load dialogScript.js'));
+      s.onerror = () => reject(new Error('failed to load dialog script: ' + dialogScriptSrc));
       document.body.appendChild(s);
     });
 
@@ -115,7 +132,6 @@ async function ensureDialogLoaded() {
     if (typeof window.showWarningDialog !== 'function') {
       const start = Date.now();
       while (Date.now() - start < 1000) {
-        // small sleep
         await new Promise(r => setTimeout(r, 50));
         if (typeof window.showWarningDialog === 'function') break;
       }
