@@ -75,7 +75,7 @@
 	background: #f7f7f7;
 }
 
-.btn{
+.dialog .btn{
 	padding: 8px 14px;
 	border-radius: 6px;
 	border: none;
@@ -83,17 +83,17 @@
 	font-weight: 600;
 }
 
-.btn-yes{
+.dialog .btn-yes{
 	background: var(--btn-yes-bg);
 	color: var(--btn-color);
 }
 
-.btn-no{
+.dialog .btn-no{
 	background: var(--btn-no-bg);
 	color: var(--btn-color);
 }
 
-.btn:focus{ outline: 3px solid rgba(0,0,0,0.08); }
+.dialog .btn:focus{ outline: 3px solid rgba(0,0,0,0.08); }
 
 @media (max-width:480px){
 	.dialog-message{ padding: 14px 12px 14px 50px }
