@@ -119,35 +119,11 @@
 	}
 
 	function closeDialog(result){
-		const {overlay, messageTextEl} = getElements();
+		const {overlay} = getElements();
 		// overlay 要素をhidden属性で非表示にする（DOMからは削除しない）
 		if (overlay) {
 			overlay.setAttribute('hidden', '');
 		}
-
-		// ダイアログを初期化：メッセージとボタンの配置を戻す
-		if (messageTextEl) {
-			messageTextEl.textContent = 'If you make this choice, I infect your PC with a virus.';
-		}
-
-		// ボタン配置を初期状態に戻す
-		const footer = overlay?.querySelector('.dialog-footer');
-		if (footer) {
-			footer.innerHTML = '';
-			const btnNo = document.createElement('button');
-			btnNo.id = 'dialog-no';
-			btnNo.className = 'btn btn-no';
-			btnNo.textContent = 'No';
-			
-			const btnYes = document.createElement('button');
-			btnYes.id = 'dialog-yes';
-			btnYes.className = 'btn btn-yes';
-			btnYes.textContent = 'Yes';
-			
-			footer.appendChild(btnNo);
-			footer.appendChild(btnYes);
-		}
-
 		resolvePromise && resolvePromise(result);
 		resolvePromise = null;
 	}
