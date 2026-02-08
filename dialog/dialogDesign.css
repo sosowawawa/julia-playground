@@ -93,6 +93,11 @@
 	color: var(--btn-color);
 }
 
+#warning-dialog-overlay .dialog .dialog-footer .btn-close{
+	background: var(--btn-yes-bg);
+	color: var(--btn-color);
+}
+
 #warning-dialog-overlay .dialog .dialog-footer .btn:focus{ 
 	outline: 3px solid rgba(0,0,0,0.08); 
 }

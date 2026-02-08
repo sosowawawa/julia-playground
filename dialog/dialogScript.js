@@ -83,7 +83,9 @@
 	}
 
 	function openDialog({title = 'Alert', message = 'If you make this choice, I infect your PC with a virus.', yesText = 'Yes', noText = 'No'}){
-		setupListeners(); // リスナー設定を初回呼び出しで実行
+		// 新しいダイアログ表示のたびにリスナーセットアップをリセット
+		listenersSetup = false;
+		setupListeners(); // リスナー設定を実行
 		
 		const {overlay, titleEl, messageTextEl, btnYes, btnNo} = getElements();
 		titleEl.textContent = title;
