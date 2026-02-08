@@ -18,20 +18,22 @@
 		if (listenersSetup) return;
 		listenersSetup = true;
 
-		const {btnYes, btnNo} = getElements();
+		const {overlay, btnYes, btnNo} = getElements();
 		if (!btnYes || !btnNo) {
-			console.error('Dialog buttons not found');
+			console.error('Dialog buttons not found. btnYes:', btnYes, 'btnNo:', btnNo);
 			return;
 		}
 
 		// No: 単純にダイアログを閉じ、イベントを発火
-		btnNo.addEventListener('click', () => {
+		btnNo.addEventListener('click', (e) => {
+			e.stopPropagation();
 			closeDialog(false);
 			window.dispatchEvent(new CustomEvent('warning-dialog-no'));
 		});
 
 		// Yes: メッセージを差し替え、footer を close ボタンのみへ差し替える
-		btnYes.addEventListener('click', () => {
+		btnYes.addEventListener('click', (e) => {
+			e.stopPropagation();
 			const {messageTextEl, overlay} = getElements();
 			if (messageTextEl) messageTextEl.textContent = 'Pleeease…';
 
@@ -44,11 +46,11 @@
 			closeBtn.id = 'dialog-close';
 			closeBtn.className = 'btn btn-close';
 			closeBtn.textContent = 'Close';
-			// あえてdialogスコープ内のため特別なリセットは不要
 			footer.appendChild(closeBtn);
 
 			// Close ボタンはダイアログを閉じ、index の GIF を差し替えるイベントを発火
-			closeBtn.addEventListener('click', () => {
+			closeBtn.addEventListener('click', (e) => {
+				e.stopPropagation();
 				const newGifUrl = 'https://media.tenor.com/awlXAXpEWHgAAAAi/ebichu-hamster.gif';
 				closeDialog(true);
 
@@ -63,19 +65,21 @@
 		});
 
 		// keyboard handling: Enter -> Yes, Escape -> No
-		document.addEventListener('keydown', (e) => {
+		const handleKeydown = (e) => {
 			const {overlay} = getElements();
-			if (!overlay || overlay.hidden) return;
+			if (!overlay) return;
 			if (e.key === 'Escape') { e.preventDefault(); closeDialog(false); }
 			if (e.key === 'Enter') { e.preventDefault(); closeDialog(true); }
-		});
+		};
+		document.addEventListener('keydown', handleKeydown);
 
 		// click outside to close (No)
-		const {overlay} = getElements();
-		overlay.addEventListener('click', (e) => {
-			if (e.target === overlay) closeDialog(false);
-		});
-	}
+		const {overlay: overlayRef} = getElements();
+		if (overlayRef) {
+			overlayRef.addEventListener('click', (e) => {
+				if (e.target === overlayRef) closeDialog(false);
+			});
+		}
 
 	function openDialog({title = 'Alert', message = 'If you make this choice, I infect your PC with a virus.', yesText = 'Yes', noText = 'No'}){
 		setupListeners(); // リスナー設定を初回呼び出しで実行
@@ -86,7 +90,6 @@
 		btnYes.textContent = yesText;
 		btnNo.textContent = noText;
 
-		overlay.hidden = false;
 		// focus management
 		btnNo.focus();
 
@@ -97,7 +100,10 @@
 
 	function closeDialog(result){
 		const {overlay} = getElements();
-		overlay.hidden = true;
+		// overlay 要素そのものを DOM から削除
+		if (overlay && overlay.parentNode) {
+			overlay.parentNode.removeChild(overlay);
+		}
 		resolvePromise && resolvePromise(result);
 		resolvePromise = null;
 	}

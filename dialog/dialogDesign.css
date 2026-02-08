@@ -28,13 +28,6 @@
 	overflow: hidden;
 	transform: translateY(6px);
 	animation: dialog-pop .12s ease-out;
-	/* リセット */
-	all: initial;
-	display: block;
-	background: var(--dialog-bg);
-	border-radius: var(--radius);
-	box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-	overflow: hidden;
 }
 
 @keyframes dialog-pop{
