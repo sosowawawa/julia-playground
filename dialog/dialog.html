@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<link rel="stylesheet" href="dialogDesign.css">
+	<title>alert</title>
+</head>
+<body>
+
+	<!-- モーダルオーバーレイ -->
+	<div id="warning-dialog-overlay" class="overlay" hidden>
+		<div id="warning-dialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="warning-dialog-title">
+			<header class="dialog-header">
+				<h2 id="warning-dialog-title" class="dialog-title">Alert</h2>
+			</header>
+
+			<div id="warning-dialog-message" class="dialog-message">If you make this choice, I infect your PC with a virus.</div>
+
+			<footer class="dialog-footer">
+				<button id="dialog-no" class="btn btn-no">No</button>
+				<button id="dialog-yes" class="btn btn-yes">Yes</button>
+			</footer>
+		</div>
+	</div>
+
+	<script src="dialogScript.js"></script>
+</body>
+</html>
