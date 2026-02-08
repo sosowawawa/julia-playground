@@ -75,7 +75,7 @@
 	background: #f7f7f7;
 }
 
-.dialog .btn{
+#warning-dialog-overlay .dialog .dialog-footer .btn{
 	padding: 8px 14px;
 	border-radius: 6px;
 	border: none;
@@ -83,17 +83,19 @@
 	font-weight: 600;
 }
 
-.dialog .btn-yes{
+#warning-dialog-overlay .dialog .dialog-footer .btn-yes{
 	background: var(--btn-yes-bg);
 	color: var(--btn-color);
 }
 
-.dialog .btn-no{
+#warning-dialog-overlay .dialog .dialog-footer .btn-no{
 	background: var(--btn-no-bg);
 	color: var(--btn-color);
 }
 
-.dialog .btn:focus{ outline: 3px solid rgba(0,0,0,0.08); }
+#warning-dialog-overlay .dialog .dialog-footer .btn:focus{ 
+	outline: 3px solid rgba(0,0,0,0.08); 
+}
 
 @media (max-width:480px){
 	.dialog-message{ padding: 14px 12px 14px 50px }

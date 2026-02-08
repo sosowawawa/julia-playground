@@ -118,6 +118,13 @@ window.addEventListener('warning-dialog-close', (ev) => {
     const topGif = document.getElementById('topGif');
     if (topGif) topGif.src = newGif;
   }
+  // ダイアログが削除されたため、次のクリックで新しいダイアログを挿入するようにリセット
+  dialogLoaded = false;
+});
+
+// No ボタンクリック時のイベントでもリセット
+window.addEventListener('warning-dialog-no', (ev) => {
+  dialogLoaded = false;
 });
 
 // --------------------------------------
