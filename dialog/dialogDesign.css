@@ -47,10 +47,24 @@
 }
 
 .dialog-message{
-	padding: 18px 16px;
+	position: relative;
+	padding: 18px 16px 18px 56px;
 	color: #222;
 	line-height: 1.4;
 	font-size: 0.98rem;
+}
+
+.dialog-icon{
+  position: absolute;
+  left: 14px;
+  top: 18px;
+  width: 28px;
+  height: 28px;
+  fill: var(--header-bg);
+}
+
+.dialog-message-text{
+  /* ensures text flows correctly beside/under the icon */
 }
 
 .dialog-footer{
@@ -82,6 +96,7 @@
 .btn:focus{ outline: 3px solid rgba(0,0,0,0.08); }
 
 @media (max-width:480px){
-	.dialog-message{ padding: 14px 12px }
+	.dialog-message{ padding: 14px 12px 14px 50px }
+	.dialog-icon{ left: 12px; top: 14px; width:24px; height:24px }
 	.dialog-footer{ padding: 10px 12px }
 }
