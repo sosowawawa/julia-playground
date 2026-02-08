@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>My Site</title>
   <link rel="stylesheet" href="design.css">
+  <link rel="stylesheet" href="dialog/dialogDesign.css">
 </head>
 <body>
 
@@ -17,6 +18,30 @@
     <button id="btn2">NO</button>
   </div>
 
+  <!-- モーダルオーバーレイ -->
+  <div id="warning-dialog-overlay" class="overlay" hidden>
+    <div id="warning-dialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="warning-dialog-title">
+      <header class="dialog-header">
+        <h2 id="warning-dialog-title" class="dialog-title">Alert</h2>
+      </header>
+
+      <div id="warning-dialog-message" class="dialog-message">
+        <!-- 警告アイコン（左上） -->
+        <svg class="dialog-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M1 21h22L12 2 1 21z"></path>
+          <path d="M13 16h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="#fff"></path>
+        </svg>
+        <div class="dialog-message-text">If you make this choice, I infect your PC with a virus.</div>
+      </div>
+
+      <footer class="dialog-footer">
+        <button id="dialog-no" class="btn btn-no">No</button>
+        <button id="dialog-yes" class="btn btn-yes">Yes</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="dialog/dialogScript.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

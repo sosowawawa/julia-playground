@@ -46,48 +46,11 @@ function setInitialPositions() {
 setInitialPositions();
 window.addEventListener('resize', setInitialPositions);
 
-// ダイアログをページに挿入（一度だけ）
-let dialogLoaded = false;
+// ダイアログはindex.htmlに埋め込まれているため、準備完了
+let dialogLoaded = true;
 async function ensureDialogInDOM() {
-  if (dialogLoaded) return;
-  dialogLoaded = true;
-
-  try {
-    // ダイアログ HTML を取得して body に追加
-    const resp = await fetch('dialog/dialog.html');
-    if (!resp.ok) throw new Error('Failed to fetch dialog.html');
-    const html = await resp.text();
-    
-    // HTML をパースして需要な要素のみを抽出
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const dialogOverlay = doc.getElementById('warning-dialog-overlay');
-    if (dialogOverlay) {
-      document.body.appendChild(dialogOverlay.cloneNode(true));
-    }
-
-    // CSS を head に追加
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'dialog/dialogDesign.css';
-    document.head.appendChild(link);
-
-    // dialogScript.js を読み込む
-    await new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'dialog/dialogScript.js';
-      script.onload = resolve;
-      script.onerror = () => reject(new Error('Failed to load dialogScript.js'));
-      document.body.appendChild(script);
-    });
-
-    // スクリプトの初期化を少し待つ
-    await new Promise(resolve => setTimeout(resolve, 100));
-  } catch (err) {
-    console.error('Failed to load dialog:', err);
-    dialogLoaded = false;
-    throw err;
-  }
+  // ダイアログHTMLはすでにDOMに存在しているため、何もしない
+  return;
 }
 
 // No ボタンをクリックしたときにダイアログを開く処理
@@ -113,13 +76,11 @@ window.addEventListener('warning-dialog-close', (ev) => {
     const topGif = document.getElementById('topGif');
     if (topGif) topGif.src = newGif;
   }
-  // ダイアログが削除されたため、次のクリックで新しいダイアログを挿入するようにリセット
-  dialogLoaded = false;
 });
 
-// No ボタンクリック時のイベントでもリセット
+// No ボタンクリック時のイベントをハンドル
 window.addEventListener('warning-dialog-no', (ev) => {
-  dialogLoaded = false;
+  // ダイアログは再利用可能
 });
 
 // --------------------------------------

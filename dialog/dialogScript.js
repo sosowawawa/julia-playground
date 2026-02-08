@@ -15,6 +15,9 @@
 	}
 
 	function setupListeners() {
+		if (listenersSetup) return;
+		listenersSetup = true;
+
 		const {overlay, btnYes, btnNo} = getElements();
 		if (!btnYes || !btnNo) {
 			console.error('Dialog buttons not found. btnYes:', btnYes, 'btnNo:', btnNo);
@@ -85,6 +88,12 @@
 		setupListeners(); // リスナー設定を実行
 		
 		const {overlay, titleEl, messageTextEl, btnYes, btnNo} = getElements();
+		
+		// ダイアログを表示（hidden属性を削除）
+		if (overlay) {
+			overlay.removeAttribute('hidden');
+		}
+		
 		titleEl.textContent = title;
 		if (messageTextEl) messageTextEl.textContent = message;
 		btnYes.textContent = yesText;
@@ -100,9 +109,9 @@
 
 	function closeDialog(result){
 		const {overlay} = getElements();
-		// overlay 要素そのものを DOM から削除
-		if (overlay && overlay.parentNode) {
-			overlay.parentNode.removeChild(overlay);
+		// overlay 要素をhidden属性で非表示にする（DOMからは削除しない）
+		if (overlay) {
+			overlay.setAttribute('hidden', '');
 		}
 		resolvePromise && resolvePromise(result);
 		resolvePromise = null;
