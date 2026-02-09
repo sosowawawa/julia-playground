@@ -1,5 +1,5 @@
 // ===============================
-// 🎈 yesView：ハート風船アニメーション
+// 🎈 yesView：ハート風船アニメーション（改良版）
 // ===============================
 
 // Canvas を動的に追加
@@ -37,9 +37,19 @@ class Heart {
   draw() {
     ctx.save();
     ctx.globalAlpha = this.alpha;
-    ctx.fillStyle = "pink";
 
     const s = this.size;
+
+    // 🎈 風船っぽい光沢グラデーション
+    const grad = ctx.createRadialGradient(
+      this.x - s * 0.3, this.y - s * 0.3, s * 0.1,
+      this.x, this.y, s
+    );
+    grad.addColorStop(0, "#ff9ab3"); // ハイライト
+    grad.addColorStop(1, "#ff6b8b"); // 赤みのあるピンク（ベース）
+
+    ctx.fillStyle = grad;
+
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
     ctx.bezierCurveTo(this.x - s, this.y - s, this.x - s, this.y + s, this.x, this.y + s);
@@ -59,9 +69,9 @@ class Heart {
 
 let hearts = [];
 
-// ページを開いている間ずっと湧き続ける
+// 🎈 ハートの量を 2/3 に（3 → 2）
 setInterval(() => {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 1; i++) {
     hearts.push(new Heart());
   }
 }, 100);
