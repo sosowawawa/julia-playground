@@ -30,7 +30,7 @@ body {
 #message {
   margin-top: 2vh;
   margin-bottom: 4vh;
-  font-size: min(6vw, 5vh, 3rem);
+  font-size: min(6vw, 7vh, 3rem);
   max-width: 90vw;
   text-align: center;
   word-break: break-word;
