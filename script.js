@@ -5,12 +5,12 @@ yesBtn.style.position = "absolute";
 noBtn.style.position = "absolute";
 
 yesBtn.addEventListener('click', () => {
-  
+
 window.location.href = "event_20260214.ics";
 
 setTimeout(() => {
   window.location.href = "./yesView/yesView.html";
-}, 1200);
+}, 1500);
 
 });
 
