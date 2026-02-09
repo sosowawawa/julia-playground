@@ -5,31 +5,13 @@ yesBtn.style.position = "absolute";
 noBtn.style.position = "absolute";
 
 yesBtn.addEventListener('click', () => {
-const icsContent =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Sochan Event//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-BEGIN:VEVENT
-UID:sochan-20260214@example.com
-DTSTAMP:20260201T000000Z
-SUMMARY:So-chan Day
-DESCRIPTION:How about getting dinner together?
-DTSTART;VALUE=DATE:20260214
-DTEND;VALUE=DATE:20260215
-END:VEVENT
-END:VCALENDAR`;
+  
+window.location.href = "event_20260214.ics";
 
-  const blob = new Blob([icsContent], { type: "text/calendar" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "event_20260214.ics";
-  a.click();
-
+setTimeout(() => {
   window.location.href = "./yesView/yesView.html";
+}, 1200);
+
 });
 
 // --------------------------------------
