@@ -6,11 +6,11 @@ noBtn.style.position = "absolute";
 
 yesBtn.addEventListener('click', () => {
 
-window.location.href = "event_20260214.ics";
+  window.open("event_20260214.ics", "_blank");
 
-setTimeout(() => {
-  window.location.href = "./yesView/yesView.html";
-}, 1500);
+  setTimeout(() => {
+    window.location.href = "./yesView/yesView.html";
+  }, 500);
 
 });
 
