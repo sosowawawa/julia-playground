@@ -4,29 +4,30 @@
 body {
   margin: 0;
   padding: 0;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   font-family: 'Cormorant Garamond', 'Playfair Display', serif;
-  background: linear-gradient(90deg, #ffe0e6 0%, #f8c6d8 100%);
-  background-image:url('../background.png');
-  background-repeat:no-repeat;
-  background-position: left top, right bottom;
-  background-size: cover;
+
+  /* ★背景が白くならないように修正★ */
+  background-image: url('../background.png');
+  background-repeat: no-repeat;
+  background-position: center center; /* ← 左上固定をやめると白が出ない */
+  background-size: cover;             /* ← 画面全体を必ず埋める */
 }
 
 /* 上半分（メッセージ） */
 .top {
   flex: 1;
   display: flex;
-  flex-direction:column;
-  justify-content: flex-start;   /* 横中央 */
-  align-items: center;       /* 縦中央 */
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   font-size: 5rem;
-  position:relative;
+  position: relative;
 }
 
-#message{
+#message {
   margin-top: 2vh;
   margin-bottom: 4vh;
   font-size: min(6vw, 5vh, 3rem);
@@ -37,7 +38,7 @@ body {
 
 #topGif {
   display: block;
-  margin: 32px auto 0 auto; /* 上部余白追加 */
+  margin: 32px auto 0 auto;
   width: min(40vh, 45vh, 90vw, 320px);
   height: min(40vh, 45vh, 90vw, 320px);
   aspect-ratio: 1 / 1;
@@ -51,12 +52,14 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding: 2rem;
-  text-align: center;
-  font-size: min(4vw, 2rem);
-  line-height: 1.6;
-  color: #5a2a3a; /* 落ち着いたピンク系の文字色 */
-  word-break: break-word;
+  font-size: 1.6rem;
+  position: relative;
+}
+
+.bottom p {
+  margin: 0.8rem 0;
+  padding: 0;
+  line-height: 0.7;
 }
